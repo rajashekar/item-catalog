@@ -17,3 +17,11 @@
     cursor: pointer;
     white-space: nowrap;
 }
+
+.divider {
+    position: absolute;
+    left: 25%;
+    top: 140px;
+    bottom: 10%;
+    border-left: 1px solid #c5bebe;
+}

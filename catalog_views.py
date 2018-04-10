@@ -1,13 +1,22 @@
-from flask import Flask, request, render_template, make_response, flash, redirect
+from flask import Flask, request, render_template, make_response, flash, redirect, jsonify
 from flask import session as login_session
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
+
+from sqlalchemy import create_engine, asc
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, User, Category, Item
 
 import httplib2
 import random
 import string
 import json
 import requests
-import ptvsd
+
+engine = create_engine('sqlite:///itemcatalog.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
 
 CLIENT_ID = json.loads(open('client_secret_google.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Item Catalog App"    
@@ -16,7 +25,8 @@ app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
 def showCatalog():
-    return render_template('catalog.html')
+    items = session.query(ItemCatalog).order_by(asc(ItemCatalog.title))
+    return render_template('catalog.html', items=items)
 
 @app.route('/login')
 def showLogin():
@@ -112,6 +122,16 @@ def sendreponse(message, statusCode):
     response = make_response(json.dumps(message),statusCode)
     response.headers['Content-Type'] = 'application/json'
     return response
+
+@app.route('/category/JSON')
+def categoryJSON():
+    categories = session.query(Category).all()
+    return jsonify(categories=[r.serialize for r in categories])
+
+@app.route('/items/JSON')
+def itemsJSON():
+    items = session.query(Item).all()
+    return jsonify(items=[r.serialize for r in items])
 
 if __name__ == '__main__':
     app.secret_key = 'super_secret_key'
