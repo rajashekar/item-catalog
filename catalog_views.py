@@ -24,9 +24,10 @@ APPLICATION_NAME = "Item Catalog App"
 app = Flask(__name__)
 
 @app.route('/', methods = ['GET'])
-def showCatalog():
-    items = session.query(ItemCatalog).order_by(asc(ItemCatalog.title))
-    return render_template('catalog.html', items=items)
+def showMain():
+    categories = session.query(Category).order_by(asc(Category.name))
+    items =  session.query(Item).order_by(asc(Item.modified_date))
+    return render_template('catalog.html', categories=categories, items=items)
 
 @app.route('/login')
 def showLogin():
