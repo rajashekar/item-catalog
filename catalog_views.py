@@ -124,12 +124,18 @@ def sendreponse(message, statusCode):
     response.headers['Content-Type'] = 'application/json'
     return response
 
-@app.route('/category/JSON')
+@app.route('/category.json')
 def categoryJSON():
     categories = session.query(Category).all()
-    return jsonify(categories=[r.serialize for r in categories])
+    response = []
+    for cat in categories:
+        items = session.query(Item).filter_by(category_name = cat.name).all()
+        res = cat.serialize
+        res['items'] = [r.serialize for r in items]
+        response.append(res)
+    return jsonify(categories=[r for r in response])
 
-@app.route('/items/JSON')
+@app.route('/items.json')
 def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[r.serialize for r in items])

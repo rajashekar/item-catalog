@@ -25,3 +25,7 @@
     bottom: 10%;
     border-left: 1px solid #c5bebe;
 }
+
+.item-title {
+    padding-top: 2px;
+}
