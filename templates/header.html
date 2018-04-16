@@ -1,12 +1,12 @@
-<header class="row page-header">
-    <div class="col-md-6">
-        <h1>Catalog App</h1>
+<header class="row custom-header">
+    <div class="col-md-6 header-title">
+        <a class="url-link" href="/">Catalog App</a>
     </div>
     <div class="col-md-6 text-right">
         {%if 'username' not in session %}
-            <a href="/login" class="submit-button">Login</a>
+            <a class="submit-button" href="/login" >Login</a>
         {% else %}
-            <a href="/disconnect" class="submit-button">Logout</a>    
+            <a class="submit-button" href="/disconnect">Logout</a>    
         {% endif %}    
     </div>
 </header>

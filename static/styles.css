@@ -6,6 +6,7 @@
 .submit-button {
     color: #FFFFFF;
     background-color: #4CAF50;
+    margin-top: 16px!important;
     margin-bottom: 16px!important;
     border: none;
     display: inline-block;
@@ -21,11 +22,37 @@
 .divider {
     position: absolute;
     left: 25%;
-    top: 140px;
+    top: 75px;
     bottom: 10%;
     border-left: 1px solid #c5bebe;
 }
 
 .item-title {
     padding-top: 2px;
+}
+
+.custom-header {
+    background: #1b4f83;
+    color: #fff;
+    border-bottom-color: #2e3d54;
+    box-sizing: border-box;
+    padding: 0 10px;
+    clear: both;
+    float: left;
+    width: 100%;
+}
+
+.header-title {
+    font-weight: 900;
+    font-size: 34px;
+    padding-top: 10px;
+}
+
+.url-link {
+    color: #fff;
+}
+
+.header-title a {
+    color: #FFFFFF;
+    text-decoration: none;
 }
