@@ -36,6 +36,11 @@ def showCategory(cat_name):
     return render_template('catalog.html', categories=categories, 
             items=items, cat_name=cat_name, page="category", size=len(items))
 
+@app.route('/catalog/<string:cat_name>/<string:item_name>')
+def showItem(cat_name, item_name):
+    item = session.query(Item).filter_by(category_name = cat_name, title = item_name).one()
+    return render_template('item.html', item=item)
+
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits) for x in xrange(32))

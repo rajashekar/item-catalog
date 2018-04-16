@@ -5,7 +5,11 @@
         <div id="DivLeft" class="col-md-3">
             <div><h3>Categories</h3></div>
             {% for cat in categories %}
-                <div class='item-title'><a href="/catalog/{{cat.name}}/items">{{cat.name}}</a></div>
+                <div class='item-title'>
+                    <a href="/catalog/{{cat.name}}/items">
+                        {{cat.name}}
+                    </a>
+                </div>
             {% endfor %}
         </div>
         <div class="divider"></div>
@@ -18,7 +22,9 @@
             
             {% for item in items %}
                 <div class='item-title'>
-                    <a href="#">{{item.title}}</a>
+                    <a href="/catalog/{{item.category.name}}/{{item.title}}">
+                        {{item.title}}
+                    </a>
                     {% if page == 'list' %}
                         <i>({{item.category.name}})</i>
                     {% endif %}
