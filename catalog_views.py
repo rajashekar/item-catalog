@@ -27,7 +27,14 @@ app = Flask(__name__)
 def showMain():
     categories = session.query(Category).order_by(asc(Category.name))
     items =  session.query(Item).order_by(asc(Item.modified_date))
-    return render_template('catalog.html', categories=categories, items=items)
+    return render_template('catalog.html', categories=categories, items=items, page="list")
+
+@app.route('/catalog/<string:cat_name>/items')
+def showCategory(cat_name):
+    categories = session.query(Category).order_by(asc(Category.name))
+    items = session.query(Item).filter_by(category_name = cat_name).all()
+    return render_template('catalog.html', categories=categories, 
+            items=items, cat_name=cat_name, page="category", size=len(items))
 
 @app.route('/login')
 def showLogin():
@@ -124,8 +131,8 @@ def sendreponse(message, statusCode):
     response.headers['Content-Type'] = 'application/json'
     return response
 
-@app.route('/category.json')
-def categoryJSON():
+@app.route('/catalog.json')
+def catalogJSON():
     categories = session.query(Category).all()
     response = []
     for cat in categories:

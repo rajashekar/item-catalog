@@ -5,16 +5,23 @@
         <div id="DivLeft" class="col-md-3">
             <div><h3>Categories</h3></div>
             {% for cat in categories %}
-                <div class='item-title'><a href="#">{{cat.name}}</a></div>
+                <div class='item-title'><a href="/catalog/{{cat.name}}/items">{{cat.name}}</a></div>
             {% endfor %}
         </div>
         <div class="divider"></div>
         <div id="DivMain divider" class="col-md-6">
-            <h3>Latest Items</h3>
+            {% if page == 'list' %}
+                <h3>Latest Items</h3>
+            {% elif page == 'category' %}
+                <h3>{{cat_name}} items ({{size}})</h3>
+            {% endif %}
+            
             {% for item in items %}
                 <div class='item-title'>
                     <a href="#">{{item.title}}</a>
-                    <i>({{item.category.name}})</i>
+                    {% if page == 'list' %}
+                        <i>({{item.category.name}})</i>
+                    {% endif %}
                 </div>
             {% endfor %}
         </div>
