@@ -52,7 +52,16 @@
     color: #fff;
 }
 
+.login {
+    text-align: right
+}
+
 .header-title a {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+.login a {
     color: #FFFFFF;
     text-decoration: none;
 }
