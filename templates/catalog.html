@@ -14,6 +14,9 @@
         </div>
         <div class="divider"></div>
         <div id="DivMain divider" class="col-md-6">
+            {%if 'username' in session %}
+                <a class="submit-button" href="/catalog/new">Add Item</a>
+            {% endif %}
             {% if page == 'list' %}
                 <h3>Latest Items</h3>
             {% elif page == 'category' %}

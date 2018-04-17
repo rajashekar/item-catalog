@@ -1,0 +1,29 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="row">
+    <div class="col-md-6">
+        <div><h3>Add Item</h3></div>
+        <form action="/catalog/new" method="post">
+            <label for="title">Title</label><br>
+            <input type="text" name="title" placeholder="Title"><br>
+            <div class="padding-bottom"></div>
+
+            <label for="description">Description </label><br>
+            <textarea class="form-textarea" type="text" name="description" 
+                placeholder="Description of the item"></textarea><br>
+            <div class="padding-bottom"></div>
+
+            <label for="category">Category</label><br>
+            <select name="category">
+                {% for cat in categories %}
+                    <option value="{{cat.name}}">{{cat.name}}</option>
+                {% endfor %}
+            </select>
+            <div class="padding-bottom"></div>
+
+            <button class="btn btn-default">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

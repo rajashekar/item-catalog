@@ -65,3 +65,13 @@
     color: #FFFFFF;
     text-decoration: none;
 }
+
+.padding-bottom {
+	padding-bottom: 10px;
+}
+
+.form-textarea {
+    margin: 0px; 
+    width: 334px; 
+    height: 110px;
+}

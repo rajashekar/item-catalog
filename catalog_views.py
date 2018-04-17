@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, make_response, flash, redirec
 from flask import session as login_session
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
-from sqlalchemy import create_engine, asc
+from sqlalchemy import create_engine, asc, desc
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, User, Category, Item
 
@@ -11,6 +11,7 @@ import random
 import string
 import json
 import requests
+from datetime import datetime
 
 engine = create_engine('sqlite:///itemcatalog.db')
 Base.metadata.bind = engine
@@ -23,10 +24,29 @@ APPLICATION_NAME = "Item Catalog App"
 
 app = Flask(__name__)
 
+def createUser(login_session):
+    newUser = User(name=login_session['username'], email=login_session['email'],
+                    picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.id                    
+
+def getUserInfo(user_id):
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+def getUserID(email):
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.id
+    except:
+        return None        
+
 @app.route('/', methods = ['GET'])
 def showMain():
     categories = session.query(Category).order_by(asc(Category.name))
-    items =  session.query(Item).order_by(asc(Item.modified_date))
+    items =  session.query(Item).order_by(desc(Item.modified_date))
     return render_template('catalog.html', categories=categories, items=items, page="list")
 
 @app.route('/catalog/<string:cat_name>/items')
@@ -40,6 +60,57 @@ def showCategory(cat_name):
 def showItem(cat_name, item_name):
     item = session.query(Item).filter_by(category_name = cat_name, title = item_name).one()
     return render_template('item.html', item=item)
+
+@app.route('/catalog/new', methods=['GET','POST'])
+def newItem():
+    if 'username' not in login_session:
+        return redirect('/login')
+    categories = session.query(Category).order_by(asc(Category.name))
+    if request.method == 'POST':
+        newItem = Item(title = request.form['title'], 
+                    description = request.form['description'], 
+                    category_name = request.form['category'],
+                    user_id=login_session['user_id'])
+        session.add(newItem)            
+        flash('New Item % successfully created' % newItem.title)
+        session.commit()
+        return redirect('/')
+    else:
+        return render_template('newItem.html', categories=categories)    
+
+@app.route('/catalog/<string:item_name>/edit', methods = ['GET','POST'])
+def editItem(item_name):
+    if 'username' not in login_session:
+        return redirect('/login')
+    editItem = session.query(Item).filter_by(title = item_name).one()    
+    categories = session.query(Category).order_by(asc(Category.name))
+    if request.method == 'POST':
+        if request.form['title']:
+            editItem.title = request.form['title']
+        if request.form['description']:
+            editItem.description = request.form['description']
+        if request.form['category']:
+            editItem.category_name = request.form['category']        
+        editItem.modified_date = datetime.utcnow()
+        flash('Item successfully edited %s' % editItem.title)
+        return redirect('/')
+    else:
+        return render_template('editItem.html', item = editItem, categories=categories)    
+
+@app.route('/catalog/<string:item_name>/delete', methods = ['GET','POST'])
+def deleteItem(item_name):
+    if 'username' not in login_session:
+        return redirect('/login')
+    deleteItem = session.query(Item).filter_by(title = item_name).one()    
+    if deleteItem.user_id != login_session['user_id']:
+        return "<script>function myFunction() { alert('You are not authorized to delete this item.');}</script><body onload='myFunction()'>"
+    if request.method == 'POST':
+        session.delete(deleteItem)
+        flash('%s successfully deleted' % deleteItem.title)
+        session.commit()
+        return redirect('/')
+    else: 
+        return render_template('deleteItem.html', item = deleteItem)
 
 @app.route('/login')
 def showLogin():
@@ -59,7 +130,6 @@ def gconnect():
 
     try:
         oauth_flow = flow_from_clientsecrets('client_secret_google.json',scope='')
-        print "here 1"
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
@@ -96,6 +166,12 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
     login_session['provider'] = 'google'
+
+    # see if user exists,
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id   
 
     output = ''
     output += '<h1>Welcome, '

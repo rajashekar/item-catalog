@@ -2,7 +2,17 @@
 {% block content %}
 {% include "header.html" %}
 <div class="row">
-    <div><h3>{{item.title}}</h3></div>
-    <div>{{item.description}}</div>
+    <div class="col-md-6">
+        <div><h3>{{item.title}}</h3></div>
+        <div>{{item.description}}</div>
+        {%if 'username' in session %}
+            <a href="/catalog/{{item.title}}/edit">
+                Edit
+            </a> | 
+            <a href="/catalog/{{item.title}}/delete">
+                Delete
+            </a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

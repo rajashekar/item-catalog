@@ -1,0 +1,14 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="row">
+    <div class="col-md-6">
+        <div><h3>Delete Item</h3></div>
+        <div>Are you sure you want to delete ?</div>
+        <div class="padding-bottom"></div>
+        <form action="/catalog/{{item.title}}/delete" method="post">
+            <button class="btn btn-default">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

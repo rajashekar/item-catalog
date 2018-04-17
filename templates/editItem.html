@@ -1,0 +1,35 @@
+{% extends "main.html" %}
+{% block content %}
+{% include "header.html" %}
+<div class="row">
+    <div class="col-md-6">
+        <div><h3>Edit Item</h3></div>
+        <form action="/catalog/{{item.title}}/edit" method="post">
+            <label for="title">Title</label>
+            <input type="text" name="title" value="{{item.title}}"><br>
+            <div class="padding-bottom"></div>
+
+            <label for="description">Description</label><br>
+            <textarea class="form-textarea" type="text" name="description">{{item.description}}</textarea>
+            <div class="padding-bottom"></div>
+
+            <label for="category">Category</label><br>
+            <select name="category">
+                {% for cat in categories %}
+                    {% if item.category.name == cat.name %}
+                        <option value="{{cat.name}}" selected="selected">
+                            {{cat.name}}
+                        </option>
+                    {% else %}
+                        <option value="{{cat.name}}">
+                            {{cat.name}}
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+            <div class="padding-bottom"></div>
+            <button class="btn btn-default">Submit</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
