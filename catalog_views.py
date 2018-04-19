@@ -27,6 +27,7 @@ APPLICATION_NAME = "Item Catalog App"
 app = Flask(__name__)
 
 
+# Create user from the login session
 def createUser(login_session):
     newUser = User(name=login_session['username'],
                    email=login_session['email'],
@@ -37,11 +38,13 @@ def createUser(login_session):
     return user.id
 
 
+# Will get the user info
 def getUserInfo(user_id):
     user = session.query(User).filter_by(id=user_id).one()
     return user
 
 
+# To get the user id using email
 def getUserID(email):
     try:
         user = session.query(User).filter_by(email=email).one()
@@ -49,7 +52,7 @@ def getUserID(email):
     except:
         return None
 
-
+# Main page lists both categories and items
 @app.route('/', methods=['GET'])
 def showMain():
     categories = session.query(Category).order_by(asc(Category.name))
@@ -58,6 +61,7 @@ def showMain():
                            items=items, page="list")
 
 
+# Category page lists all items of selected category
 @app.route('/catalog/<string:cat_name>/items')
 def showCategory(cat_name):
     categories = session.query(Category).order_by(asc(Category.name))
@@ -67,6 +71,7 @@ def showCategory(cat_name):
                            page="category", size=len(items))
 
 
+# Item page lists item details
 @app.route('/catalog/<string:cat_name>/<string:item_name>')
 def showItem(cat_name, item_name):
     item = session.query(Item).filter_by(
@@ -74,6 +79,7 @@ def showItem(cat_name, item_name):
     return render_template('item.html', item=item)
 
 
+# To list create list form and to create new item
 @app.route('/catalog/new', methods=['GET', 'POST'])
 def newItem():
     if 'username' not in login_session:
@@ -92,6 +98,7 @@ def newItem():
         return render_template('newItem.html', categories=categories)
 
 
+# To list edit item form and edit item details
 @app.route('/catalog/<string:item_name>/edit', methods=['GET', 'POST'])
 def editItem(item_name):
     if 'username' not in login_session:
@@ -113,6 +120,7 @@ def editItem(item_name):
                                item=editItem, categories=categories)
 
 
+# to list delete form and to delete item
 @app.route('/catalog/<string:item_name>/delete', methods=['GET', 'POST'])
 def deleteItem(item_name):
     if 'username' not in login_session:
@@ -134,6 +142,7 @@ def deleteItem(item_name):
         return render_template('deleteItem.html', item=deleteItem)
 
 
+# To display login page
 @app.route('/login')
 def showLogin():
     state = ''.join(random.choice(string.ascii_uppercase + string.digits)
@@ -142,6 +151,7 @@ def showLogin():
     return render_template('login.html', STATE=state, session=login_session)
 
 
+# used to get google session
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     # if token is not valid, return error
@@ -213,6 +223,7 @@ def gconnect():
     return output
 
 
+# Used to disconnect google login session
 @app.route('/disconnect')
 def disconnect():
     access_token = login_session.get('access_token')
@@ -238,12 +249,14 @@ def disconnect():
         return sendreponse('Failed to revoke token for given user.', 400)
 
 
+# send response
 def sendreponse(message, statusCode):
     response = make_response(json.dumps(message), statusCode)
     response.headers['Content-Type'] = 'application/json'
     return response
 
 
+# Provides all catalog items in json
 @app.route('/catalog.json')
 def catalogJSON():
     categories = session.query(Category).all()
@@ -256,6 +269,7 @@ def catalogJSON():
     return jsonify(categories=[r for r in response])
 
 
+# Provides all items in json
 @app.route('/items.json')
 def itemsJSON():
     items = session.query(Item).all()
