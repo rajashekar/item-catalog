@@ -138,7 +138,8 @@ http://localhost:5000/items.json
   ]
 }
 ```
-http://localhost:5000/catalog/<category>/items/json
+http://localhost:5000/catalog/\<category>/items/json
+
 Example - 
 http://localhost:5000/catalog/TV/items/json
 ```
@@ -163,7 +164,8 @@ http://localhost:5000/catalog/TV/items/json
   ]
 }
 ```
-http://localhost:5000/catalog/<category>/<item>/json
+http://localhost:5000/catalog/\<category>/\<item>/json
+
 http://localhost:5000/catalog/TV/LG%20TV/json
 ```
 {
