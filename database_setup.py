@@ -7,6 +7,7 @@ import datetime
 
 Base = declarative_base()
 
+
 class User(Base):
     __tablename__ = 'user'
 
@@ -19,11 +20,12 @@ class User(Base):
     def serialize(self):
         """ Return Object data in easily serializeable format"""
         return {
-            'id'      : self.id,
-            'name'    : self.name,
-            'email'   : self.email,
-            'picture' : self.picture
+            'id': self.id,
+            'name': self.name,
+            'email': self.email,
+            'picture': self.picture
         }
+
 
 class Category(Base):
     __tablename__ = 'category'
@@ -35,9 +37,10 @@ class Category(Base):
     def serialize(self):
         """ Return object data in easily serializeable format """
         return {
-            'id'    : self.id,
-            'name'  : self.name
+            'id': self.id,
+            'name': self.name
         }
+
 
 class Item(Base):
     __tablename__ = 'item'
@@ -57,13 +60,14 @@ class Item(Base):
     def serialize(self):
         """ Return object data in easily serializeable format """
         return {
-            'id'            : self.id,
-            'title'         : self.title,
-            'category'      : self.category_name,
-            'description'   : self.description,
-            'modified_date' : self.modified_date,
-            'user_id'       : self.user_id
+            'id': self.id,
+            'title': self.title,
+            'category': self.category_name,
+            'description': self.description,
+            'modified_date': self.modified_date,
+            'user_id': self.user_id
         }
+
 
 engine = create_engine('sqlite:///itemcatalog.db')
 Base.metadata.create_all(engine)
