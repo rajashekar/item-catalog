@@ -53,6 +53,8 @@ def getUserID(email):
         return None
 
 # Main page lists both categories and items
+
+
 @app.route('/', methods=['GET'])
 def showMain():
     categories = session.query(Category).order_by(asc(Category.name))
@@ -274,6 +276,21 @@ def catalogJSON():
 def itemsJSON():
     items = session.query(Item).all()
     return jsonify(items=[r.serialize for r in items])
+
+
+# Category page lists all items in json of selected category
+@app.route('/catalog/<string:cat_name>/items/json')
+def showCategoryJSON(cat_name):
+    items = session.query(Item).filter_by(category_name=cat_name).all()
+    return jsonify(items=[r.serialize for r in items])
+
+
+# Item page lists item details in json
+@app.route('/catalog/<string:cat_name>/<string:item_name>/json')
+def showItemJSON(cat_name, item_name):
+    item = session.query(Item).filter_by(
+        category_name=cat_name, title=item_name).one()
+    return jsonify(item=item.serialize)
 
 
 if __name__ == '__main__':
