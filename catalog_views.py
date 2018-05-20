@@ -4,7 +4,7 @@ from flask import session as login_session
 from oauth2client.client import flow_from_clientsecrets, FlowExchangeError
 
 from sqlalchemy import create_engine, asc, desc
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 from database_setup import Base, User, Category, Item
 
 import httplib2
@@ -14,18 +14,23 @@ import json
 import requests
 from datetime import datetime
 
-engine = create_engine('sqlite:///itemcatalog.db')
+engine = create_engine('sqlite:////var/www/html/item-catalog/itemcatalog.db')
 Base.metadata.bind = engine
 
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+#DBSession = sessionmaker(bind=engine)
+#session = DBSession()
+session = scoped_session(sessionmaker(bind=engine))
 
-CLIENT_ID = json.loads(open('client_secret_google.json', 'r').read())[
+CLIENT_ID = json.loads(open('/var/www/html/item-catalog/client_secret_google.json', 'r').read())[
     'web']['client_id']
 APPLICATION_NAME = "Item Catalog App"
 
 app = Flask(__name__)
+app.secret_key = 'super_secret_key'
 
+@app.teardown_request
+def remove_session(ex=None):
+    session.remove()
 
 # Create user from the login session
 def createUser(login_session):
@@ -166,7 +171,7 @@ def gconnect():
 
     try:
         oauth_flow = flow_from_clientsecrets(
-            'client_secret_google.json', scope='')
+            '/var/www/html/item-catalog/client_secret_google.json', scope='')
         oauth_flow.redirect_uri = 'postmessage'
         credentials = oauth_flow.step2_exchange(code)
     except FlowExchangeError:
