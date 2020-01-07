@@ -1,5 +1,5 @@
 # item-catalog
-This project is done as part of Udacity Fullstack Developer course. The purpose of the project is to understand the concepts Python framework Flask along with implementing third-party OAuth authentication and to develop a RESTful web application to display categories and items and gives logined user to edit or add items. 
+The purpose of the project is to understand the concepts Python framework Flask along with implementing third-party OAuth authentication and to develop a RESTful web application to display categories and items and gives logined user to edit or add items. 
 ## Getting Started
 ### Prerequesites
 Below software needs to be installed
